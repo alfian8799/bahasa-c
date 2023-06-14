@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node{
+        int value;
+        struct node*next;
+    };
+
+typedef struct node*ptrnode;
+int count = 0;
+
+    ptrnode createNode(int nilai){
+        ptrnode p;
+        p = (ptrnode) malloc(sizeof(struct node));
+        p->value = nilai;
+        p->next = NULL;
+        return (p);
+    }
+
+    ptrnode insert_head(ptrnode head, int nilai){
+        ptrnode new_node = createNode(nilai);
+        new_node->next = head;
+        head = new_node;
+        return (head);
+    }
+
+    ptrnode insert_tail(ptrnode head, int nilai) {
+        ptrnode tail = head;
+        while (tail->next != NULL)
+            tail = tail->next;
+            
+        ptrnode new_node = createNode(nilai);
+        tail->next = new_node;
+        
+        return (head);
+    }
+
+    ptrnode insert_after(ptrnode head, int nilai, int prev_nilai) {
+        if (head == NULL) {
+            ptrnode new_node = createNode(nilai);
+        return new_node;
+       }   
+
+        ptrnode cursor = head;
+        while (cursor != NULL && cursor->value != prev_nilai) {
+        cursor = cursor->next;
+        }
+            if (cursor == NULL) {
+            printf("Maaf, node dengan nilai %d tidak ada\n", prev_nilai);
+            return head;
+        }
+        
+        ptrnode new_node = createNode(nilai);
+        new_node->next = cursor->next;
+        cursor->next = new_node;
+        return head;
+    }
+
+    ptrnode insert_before(ptrnode head, int nilai, int next_nilai) {
+        if (head == NULL) {
+            ptrnode new_node = createNode(nilai);
+            return new_node;
+        }
+        if (head->value == next_nilai) {
+            head = insert_head(head, nilai);
+            return head;
+        }
+
+        ptrnode cursor = head;
+        ptrnode prevcursor = NULL;
+        while (cursor != NULL && cursor->value != next_nilai) {
+            prevcursor = cursor;
+            cursor = cursor->next;
+        }
+
+        if (cursor == NULL) {
+            printf("Maaf, node dengan nilai %d tidak ada\n", next_nilai);
+        return head;
+        }
+
+        ptrnode new_node = createNode(nilai);
+        new_node->next = cursor;
+        prevcursor->next = new_node;
+        return head;
+    }
+
+
+    ptrnode hapus(ptrnode head) {
+        if(head == NULL){
+        return NULL;
+        }
+
+        while(head!= NULL){
+            ptrnode tmp = head;
+            head = head->next;
+            tmp->next = NULL;
+            free(tmp);
+        }
+
+        printf("Semua node (simpul telah dihapus)\n");
+        return(NULL);
+    }
+
+    ptrnode jumlahNode(ptrnode head) {
+        struct node*p;
+        p = head;
+        while(p != NULL){
+            p = p->next;
+            count++;
+        }
+        printf("Jumlah node adalah : %d\n", count);
+    }
+
+    ptrnode tampilnilai(ptrnode head) {
+        int i = 1;
+        ptrnode n = head;
+        printf("Daftar Nilai Linked List : \n");
+        while(n != NULL){
+            printf("Node ke %d : %d\n", i, n->value);
+            n = n->next;
+            i++;
+        };
+        printf("\n");
+    }
+
+    main() {
+        int pilih, val, val1;
+        ptrnode head = NULL;
+        while(1){
+        printf("========LINKED LIST========\n");
+        printf("1. Insert nilai di urutan awal\n");
+        printf("2. Insert nilai di urutan belakang\n");
+        printf("3. Insert nilai di setelah nilai tertentu\n");
+        printf("4. Insert nilai di sebelum nilai tertentu\n");
+        printf("5. Tampil Nilai\n");
+        printf("6. Jumlah Node\n");
+        printf("7. Free Linked List\n");
+        printf("8. Keluar\n");
+        printf("Pilihan anda = ");
+        scanf("%d", &pilih);
+
+        switch(pilih){
+            case 1:{
+                printf("Masukkan nilai = ");
+                scanf("%d", &val);
+                head = insert_head(head, val);
+                break;
+            }
+            case 2:{
+                printf("Masukkan nilai = ");
+                scanf("%d", &val);
+                head = insert_tail(head, val);
+                break;
+            }
+            case 3:{
+                printf("Masukkan nilai = ");
+                scanf("%d", &val);
+                printf("Ingin memasukkan nilai tersebut setelah = ");
+                scanf("%d", &val1);
+                head = insert_after(head, val, val1);
+                break;
+            }
+            case 4:{
+                printf("Masukkan nilai = ");
+                scanf("%d", &val);
+                printf("Ingin memasukkan nilai tersebut sebelum = ");
+                scanf("%d", &val1);
+                head = insert_before(head, val, val1);
+                break;
+            }
+            case 5:{
+                tampilnilai(head);
+                break;
+            }
+            case 6:{
+                head = jumlahNode(head);
+                break;
+            }
+            case 7:{
+                head = hapus(head);
+                break;
+            }
+            case 8:{
+                exit(0);
+            }
+            default:{
+                printf("Pilihan tersebut belum tersedia");
+                break;
+            }
+        }
+    }
+}
+
+
+
